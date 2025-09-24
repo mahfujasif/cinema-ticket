@@ -40,10 +40,10 @@ public class TicketServiceImpl implements TicketService {
     }
 
     /**
-     * Counts the total number of ticket for each types
+     * Counts the total number of ticket for each types separately
      *
      * @param ticketTypeRequests The TicketTypeRequest
-     * @return A map of total ticket number for each types
+     * @return A map of total ticket number for each ticket types
      */
     private Map<TicketTypeRequest.Type, Integer> countTickets(TicketTypeRequest... ticketTypeRequests) {
         Map<TicketTypeRequest.Type, Integer> ticketCount = new EnumMap<>(TicketTypeRequest.Type.class);
@@ -80,7 +80,7 @@ public class TicketServiceImpl implements TicketService {
             throw new InvalidPurchaseException("At least one adult ticket must be purchased");
         }
 
-        // Number of infant ticket must be less than or equal to adult ticket
+        // Number of infant ticket must be less than or equal to adult ticket as one adult can only accompany one infant
         if(adultTicketCount < infantTicketCount) {
             throw new InvalidPurchaseException("Number of infant tickets must not be more than number of adult tickets.");
         }
@@ -108,7 +108,7 @@ public class TicketServiceImpl implements TicketService {
         this.validateTicketCount(ticketCount);
         ticketPaymentService.makePayment(accountId, this.calculateTotalPrice(ticketCount));
 
-        //Infants do not require seats
+        //Counting total seats while considering Infants do not require seats
         int totalSeats = ticketCount.entrySet().stream()
                 .filter(entry -> entry.getKey() != TicketTypeRequest.Type.INFANT)
                 .mapToInt(Map.Entry::getValue)
