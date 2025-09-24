@@ -117,7 +117,7 @@ public class TicketPaymentServiceTest {
     }
 
     @Test
-    public void purchaseTicketsTest_ChildAndInfant_ThrowsException() throws InvalidPurchaseException {
+    public void purchaseTicketsTest_ChildAndInfantWithoutAdult_ThrowsException() throws InvalidPurchaseException {
         TicketTypeRequest childTicket = new TicketTypeRequest(TicketTypeRequest.Type.CHILD, 2);
         TicketTypeRequest infantTicket = new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 2);
 
@@ -143,7 +143,7 @@ public class TicketPaymentServiceTest {
     }
 
     @Test
-    public void purchaseTicketsTest_Child_ThrowsException() throws InvalidPurchaseException {
+    public void purchaseTicketsTest_ChildWithoutAdult_ThrowsException() throws InvalidPurchaseException {
         TicketTypeRequest childTicket = new TicketTypeRequest(TicketTypeRequest.Type.CHILD, 2);
 
         expectedException.expect(InvalidPurchaseException.class);
@@ -156,7 +156,7 @@ public class TicketPaymentServiceTest {
     }
 
     @Test
-    public void purchaseTicketsTest_Infant_ThrowsException() throws InvalidPurchaseException {
+    public void purchaseTicketsTest_InfantWithoutAdult_ThrowsException() throws InvalidPurchaseException {
         TicketTypeRequest infantTicket = new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 2);
 
         expectedException.expect(InvalidPurchaseException.class);
@@ -171,17 +171,17 @@ public class TicketPaymentServiceTest {
 
     @Test
     public void purchaseTicketsTest_TotalTicketLimit_ThrowsException() throws InvalidPurchaseException {
-        TicketTypeRequest adultTicket = new TicketTypeRequest(TicketTypeRequest.Type.ADULT, 10);
-        TicketTypeRequest childTicket = new TicketTypeRequest(TicketTypeRequest.Type.CHILD, 10);
-        TicketTypeRequest infantTicket = new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 10);
+        TicketTypeRequest adultTicket = new TicketTypeRequest(TicketTypeRequest.Type.ADULT, 20);
+        TicketTypeRequest childTicket = new TicketTypeRequest(TicketTypeRequest.Type.CHILD, 20);
+        TicketTypeRequest infantTicket = new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 20);
 
         expectedException.expect(InvalidPurchaseException.class);
         expectedException.expectMessage("Number of total tickets must not be more than 25.");
 
         ticketService.purchaseTickets(accountId, adultTicket, childTicket, infantTicket);
 
-        verify(ticketPaymentService, times(0)).makePayment(accountId, 100);
-        verify(seatReservationService, times(0)).reserveSeat(accountId, 30);
+        verify(ticketPaymentService, times(0)).makePayment(accountId, 800);
+        verify(seatReservationService, times(0)).reserveSeat(accountId, 40);
     }
 
     @Test
